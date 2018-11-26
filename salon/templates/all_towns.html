@@ -1,0 +1,26 @@
+% extends 'base.html'%}
+{% load bootstrap4 %}
+{% block content %}
+
+<div class="container">
+<div class="row">
+        {% for town in towns %}
+    <div class="col-sm-4">
+
+        <div class="card" >
+
+            <div class="card-body">
+              <h4 class="card-title">{{town.name}}</h4>
+              <p class="card-text"><span class="badge badge-primary">{{town.bio}}</span></p>
+              <p class="card-text" >Started by: {{town.admin}}</p>
+              <a href="/join/{{town.id}}" class="btn btn-primary">Join</a>
+            </div>
+
+          </div>
+
+    </div>
+    {% endfor %}
+</div>
+
+
+</div>

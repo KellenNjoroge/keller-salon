@@ -41,3 +41,63 @@ def update(request):
         "user_form": user_form,
         "profile_form": profile_form
     })
+
+
+@login_required(login_url='/accounts/login/')
+def town(request, town_id):
+    current_user = request.user
+    town_name = current_user.profile.town
+    # if current_user.profile.hood is None:
+    #     return redirect('update')
+    # else:
+    town = Post.get_hood_posts(id=town_id)
+    comments = Comment.objects.all()
+    form = NewComment(instance=request.user)
+
+    return render(request, 'your_town.html',
+                  {'town': town, 'town_name': town_name, 'comments': comments, 'comment_form': form})
+
+
+@login_required(login_url='/accounts/login/')
+def new_town(request):
+    current_user = request.user
+    town_name = current_user.profile.town
+    if request.method == 'POST':
+        NewTownForm = NewTown(request.POST)
+        if NewTownForm.is_valid():
+            townform = NewTownForm.save(commit=False)
+            townform.admin = current_user
+            current_user.profile.townpin = True
+            townform.save()
+            print('saved')
+
+            # request.session.modified = True
+            # current_user.profile.hood = hoodform.id
+        # return redirect('profilehood',hoodform.name)
+        return redirect('index')
+
+
+    else:
+        NewTownForm = NewTown()
+    return render(request, 'new_town.html', {"newTownForm": NewTownForm,
+                                            'town_name': town_name})
+
+
+def join(request, id):
+    current_user = request.user
+    town_name = current_user.profile.hood
+    town = Town.objects.get(id=id)
+    current_user.profile.town = Town
+    current_user.profile.save()
+
+    return redirect('index')
+
+
+def exit(request, id):
+    current_user = request.user
+    # hood_name = current_user.profile.hood
+    # hood = Hood.objects.get(id=id)
+    current_user.profile.town = None
+    current_user.profile.save()
+
+    return redirect('index')

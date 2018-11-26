@@ -1,0 +1,45 @@
+{% extends 'base.html'%}
+{% load bootstrap4 %}
+{% block content %}
+
+
+{% if town %}
+
+{% for post in town %}
+
+<div class="col-md-6 offset-md-3">
+    <div class="card border-warning mb-3">
+        <div class="card-header">{{post.title}}</div>
+        <div class="card-body ">
+            <h1 class="card-title ">{{post.postings}}</h1>
+            <p class="card-text">{{post.post}}</p>
+            {% for comment in post.comment.all %}
+            <p class = "card-text "><strong>{{comment.commentator.username}}</strong>: {{comment.comment}}</p>
+            {% endfor %}
+            <div class="card-footer bg-transparent">
+            <form  action="/comment/{{post.id}}" method="post" enctype="multipart/form-data">
+                {%csrf_token%}
+
+                {% bootstrap_form comment_form %}
+                <input type="submit" class="btn btn-primary btn-lg" value="Post">
+            </form>
+
+            {% block scripts %}
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+            {% bootstrap_javascript %} {% endblock %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endfor %}
+
+{% else %}
+
+<h1>This hood has no posts yet. Be the first to post</h1>
+{% endif %}
+
+
+
+{% endblock %}

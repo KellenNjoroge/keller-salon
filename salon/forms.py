@@ -22,10 +22,22 @@ class EditUser(forms.ModelForm):
         fields = ['first_name', 'last_name', 'email']
 
 
-# class NewComment(forms.ModelForm):
-#     class Meta:
-#         model = Comment
-#         exclude = ['commentator','comment_image']
+class NewTown(forms.ModelForm):
+    class Meta:
+        model = Town
+        fields = ['name', 'bio']
+
+
+class NewPost(forms.ModelForm):
+    class Meta:
+        model = Post
+        exclude = ['hood', 'poster']
+
+
+class NewComment(forms.ModelForm):
+    class Meta:
+        model = Comment
+        exclude = ['commentator','comment_post']
 
 
 # class NewProject(forms.ModelForm):
