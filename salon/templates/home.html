@@ -1,0 +1,38 @@
+{% extends 'base.html'%}
+{% load bootstrap4 %}
+{% block content %}
+ {% if posts %}
+
+    {% for post in posts %}
+
+        <div class="col-md-6 offset-md-3">
+            <div class="card mb-3">
+                <div class="card-header">{{post.title}}</div>
+                <div class="card-body ">
+                    <h1 class="card-title">{{post.postings}}</h1>
+                    <p class="card-text">{{post.post}}</p>
+                    <div class="card-body">
+                        {% for comment in image.comment.all %}
+                            <p class="cart-text"><strong>{{comment.commentator.username}}</strong>{{comment.comment}}</p>
+                        {% endfor %}
+                        <form  action="/comment/{{post.id}}" method="post" enctype="multipart/form-data">
+                            {%csrf_token%}
+
+                            {% bootstrap_form comment_form %}
+                            <input type="submit" class="btn btn-success btn-lg" value="Post">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    {% endfor %}
+
+    {% else %}
+
+    <h1>You're hood has no posts yet. Be the first to post</h1>
+    {% endif %}
+
+
+{% endblock %}

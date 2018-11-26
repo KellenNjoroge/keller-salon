@@ -50,7 +50,7 @@ def town(request, town_id):
     # if current_user.profile.hood is None:
     #     return redirect('update')
     # else:
-    town = Post.get_hood_posts(id=town_id)
+    town = Post.get_town_posts(id=town_id)
     comments = Comment.objects.all()
     form = NewComment(instance=request.user)
 
@@ -80,20 +80,62 @@ def new_town(request):
     else:
         NewTownForm = NewTown()
     return render(request, 'new_town.html', {"newTownForm": NewTownForm,
+
                                             'town_name': town_name})
+
+
+def all_towns(request):
+    current_user = request.user
+    towns = Town.objects.all()
+
+    return render(request, 'all_towns.html', {'towns': towns})
 
 
 def join(request, id):
     current_user = request.user
-    town_name = current_user.profile.hood
+    town_name = current_user.profile.town
     town = Town.objects.get(id=id)
-    current_user.profile.town = Town
+    current_user.profile.town = town
     current_user.profile.save()
 
     return redirect('index')
 
 
-def exit(request, id):
+@login_required(login_url='/accounts/login/')
+def new_post(request):
+    current_user = request.user
+    town_name = current_user.profile.hood
+    town = request.user.profile.hood
+    if request.method == 'POST':
+        newPostForm = NewPost(request.POST, request.FILES)
+        if newPostForm.is_valid():
+            new_post = newPostForm.save(commit=False)
+            new_post.poster = request.user
+            new_post.town = town
+            new_post.save()
+        return redirect('index')
+
+    else:
+        newPostForm = NewPost()
+    return render(request, 'new_post.html', {"newPostForm": newPostForm,
+                                            'town_name': town_name})
+
+
+def comment(request, id):
+    post = Post.objects.get(id=id)
+    print(id)
+    if request.method == 'POST':
+        comm = NewComment(request.POST)
+        if comm.is_valid():
+            comment = comm.save(commit=False)
+            comment.commentator = request.user
+            comment.comment_post = post
+            comment.save()
+            return redirect('index')
+    return redirect('index')
+
+
+def exit_town(request, id):
     current_user = request.user
     # hood_name = current_user.profile.hood
     # hood = Hood.objects.get(id=id)
