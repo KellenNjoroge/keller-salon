@@ -54,7 +54,7 @@ def town(request, town_id):
     comments = Comment.objects.all()
     form = NewComment(instance=request.user)
 
-    return render(request, 'your_town.html',
+    return render(request, 'my_town.html',
                   {'town': town, 'town_name': town_name, 'comments': comments, 'comment_form': form})
 
 
@@ -104,8 +104,8 @@ def join(request, id):
 @login_required(login_url='/accounts/login/')
 def new_post(request):
     current_user = request.user
-    town_name = current_user.profile.hood
-    town = request.user.profile.hood
+    town_name = current_user.profile.town
+    town = request.user.profile.town
     if request.method == 'POST':
         newPostForm = NewPost(request.POST, request.FILES)
         if newPostForm.is_valid():
